@@ -133,11 +133,13 @@ select *from examquestion
 insert into Department (DepartmentName) values ('Audit'), ('Administration'), ('Customer services'), ('Financial') , ('Research and development') 
 insert into position1(PositionName) values ('Manager'), ('President'), ('Director'), ('Secretary'), ('Receptionist')
 insert into account (Email, Username, FullName, DepartmentID, PositionID, CreateDate) values
+('person7@gmail.com', 'thien983', 'Do Kim Thien', 10, 3, '2020-01-13'),
 ('person1@gmail.com', 'rihana123', 'Rihana_Dimonds', 2, 7, '2020-01-14'),
 ('person2@gmail.com', 'adele345', 'Adele', 7, 8, '2021-12-10' ),
 ('person3@gmail.com', 'beyonce567', 'Beyonce', 1, 9, '2020-09-18' ),
 ('person4@gmail.com', 'taylor789', 'Taylor Swift', 3, 10, '2002-09-18' ),
-('person5@gmail.com', 'andrea', 'Andera Aybar', 5, 6, '2010-10-10' )
+('person5@gmail.com', 'andrea', 'Andera Aybar', 5, 6, '2010-10-10' ),
+('person6@gmail.com', 'thientao123', 'Do Thien Tao', 10, 3, '2020-01-14'),
 insert into groupp (groupName, creatorID, createdate) values 
 ('group_sale', 'CID06', '2023-09-15'),
 ('group_7', 'CID07', '2023-10-02'),
@@ -177,5 +179,36 @@ insert into exam(code, title, categoryID, duration, creatorID, createdate) value
 ('Test8', 'Bài kiểm tra cuối kì', 8, '01:30:00', 'CIDE04', '2018-10-28'),
 ('Test9', 'Phỏng vấn nhanh', 9, '00:10:00', 'CIDE05', '2021-10-29'),
 ('Test10', 'Thực hành', 5, '00:25:00', 'CIDE05', '2016-10-30')
-select *from examquestion
+select *from groupaccount  
 insert into examquestion values (1,5), (1,6), (2,9), (2,10), (6,9), (7, 1), (10, 4), (3,8), (5,4)
+-- Q3: lay ra id cua phong ban sale
+select departmentID from department where departmentName like 'sale'
+-- Q4: lay ra account co fullname dai nhat
+select * from account where char_length(fullname) = 
+(select char_length(fullname) from account order by char_length(fullname) desc limit 1) 
+-- Q5: Lấy ra thông tin account có full name dài nhất và thuộc phòng ban có id= 3
+select * from account where char_length(fullname) = 
+(select char_length(fullname) from account order by char_length(fullname) desc limit 1) and departmentID =3
+-- Q6: Lấy ra tên group trước ngày 20/12/2019
+update groupp set createdate = '2018-12-21' where groupID = 9
+select *from groupp  where createdate <= '2019-12-20'
+-- Q7: lấy ra id của question có >= 4 câu trả lời
+select question.QuestionID, question.content 
+from question  where question.QuestionID = 
+(select  question.QuestionID from question inner join answer where question.QuestionID = answer.questionID 
+group by question.QuestionID  having count(question.QuestionID)>=4 )
+-- Q8: Lấy ra các mã đề thi có thời gian thi >= 60 phút và được tạo trước ngày 20/12/2019
+select *from exam 
+select *  from exam where duration >= '00:60:00' and createdate < '2019-12-20'
+-- Q9: Lấy ra 5 group được tạo gần đây nhất
+select *from groupp order by createdate desc limit 5
+-- Q10: Đếm số nhân viên thuộc department có id = 2
+select departmentID  , count(accountID) as `số lượng nhân viên` from account 
+where departmentID = 2 group by departmentID 
+-- Q11: Lấy ra nhân viên có tên bắt đầu bằng chữ "D" và kết thúc bằng chữ "o"
+select *from account where left (fullname, 1) like 'D' and right (fullname, 1) like 'o'
+-- Q12: Xóa tất cả các exam được tạo trước ngày 20/12/2019
+delete from account where fullname = 'Do Kim Thien'
+select * from account  where createdate < '2019-12-20'
+delete from exam where createdate < '2019-12-20'
+(select * from exam where createdate < '2019-12-20')
